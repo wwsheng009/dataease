@@ -200,7 +200,7 @@ public class SAPHanaQueryProvider extends QueryProvider {
     public String createQueryTableWithPage(String table, List<DatasetTableField> fields, Integer page, Integer pageSize, Integer realSize, boolean isGroup, Datasource ds, List<ChartFieldCustomFilterDTO> fieldCustomFilter) {
         List<SQLObj> xFields = xFields(table, fields);
 
-        return createQuerySQL(table, fields, isGroup, null, fieldCustomFilter) + " LIMIT " + pageSize + " OFFSET " + (page - 1) * pageSize;
+        return createQuerySQL(table, fields, isGroup, ds, fieldCustomFilter) + " LIMIT " + pageSize + " OFFSET " + (page - 1) * pageSize;
     }
 
     @Override
@@ -210,7 +210,7 @@ public class SAPHanaQueryProvider extends QueryProvider {
 
     @Override
     public String createQueryTableWithLimit(String table, List<DatasetTableField> fields, Integer limit, boolean isGroup, Datasource ds, List<ChartFieldCustomFilterDTO> fieldCustomFilter) {
-        return createQuerySQL(table, fields, isGroup, null, fieldCustomFilter) + " LIMIT " + limit;
+        return createQuerySQL(table, fields, isGroup, ds, fieldCustomFilter) + " LIMIT " + limit;
     }
 
     @Override
