@@ -670,7 +670,7 @@ public class JdbcProvider extends DatasourceProvider {
                 if (StringUtils.isEmpty(hanaConfiguration.getSchema())) {
                     throw new Exception(Translator.get("i18n_schema_is_empty"));
                 }
-                return "SELECT TABLE_NAME FROM TABLES WHERE SCHEMA_NAME = 'SCHEMANAME'  AND TABLE_NAME LIKE 'MAR%' LIMIT 100;".replace("SCHEMANAME", hanaConfiguration.getSchema());
+                return "SELECT TABLE_NAME FROM TABLES WHERE SCHEMA_NAME = 'SCHEMANAME' LIMIT 10000;".replace("SCHEMANAME", hanaConfiguration.getSchema());
             default:
                 return "show tables;";
         }
@@ -723,7 +723,7 @@ public class JdbcProvider extends DatasourceProvider {
                 if (StringUtils.isEmpty(hanaConfiguration.getSchema())) {
                     throw new Exception(Translator.get("i18n_schema_is_empty"));
                 }
-                return "SELECT VIEW_NAME FROM VIEWS WHERE SCHEMA_NAME = 'SCHEMANAME' AND VIEW_NAME LIKE 'MAR%' LIMIT 100 ;".replace("SCHEMANAME", hanaConfiguration.getSchema());
+                return "SELECT VIEW_NAME FROM VIEWS WHERE SCHEMA_NAME = 'SCHEMANAME' LIMIT 10000 ;".replace("SCHEMANAME", hanaConfiguration.getSchema());
             default:
                 return null;
         }
@@ -744,7 +744,7 @@ public class JdbcProvider extends DatasourceProvider {
             case redshift:
                 return "SELECT nspname FROM pg_namespace;";
             case sap_hana:
-                return "SELECT schema_name FROM SCHEMAS;";
+                return "SELECT SCHEMA_NAME FROM SCHEMAS WHERE SCHEMA_NAME NOT LIKE '_SYS_%' AND SCHEMA_NAME <> 'SYS';";
             default:
                 return "show tables;";
         }
