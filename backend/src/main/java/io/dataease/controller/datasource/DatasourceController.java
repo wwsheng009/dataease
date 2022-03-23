@@ -39,7 +39,7 @@ public class DatasourceController {
         return datasourceService.addDatasource(datasource);
     }
 
-    @RequiresPermissions("datasource:read")
+    // @RequiresPermissions("datasource:read")
     @ApiOperation("验证数据源")
     @PostMapping("/validate")
     public ResultHolder validate(@RequestBody DatasourceDTO datasource) throws Exception {

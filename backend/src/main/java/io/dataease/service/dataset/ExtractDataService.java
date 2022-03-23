@@ -901,6 +901,27 @@ public class ExtractDataService {
                 inputStep = inputStep(transMeta, selectSQL);
                 udjcStep = udjc(datasetTableFields, DatasourceTypes.db2);
                 break;
+            case sap_hana:
+                //kettle没有sap hana的驱动，需要在kettle里加上sap hana的驱动，然后使用generic的驱动方式
+                SapHanaConfiguration hanaConfiguration = new Gson().fromJson(datasource.getConfiguration(), SapHanaConfiguration.class);
+                dataMeta = new DatabaseMeta("db", "GENERIC", "Native", hanaConfiguration.getHost().trim(), hanaConfiguration.getDataBase().trim(), hanaConfiguration.getPort().toString(), hanaConfiguration.getUsername(), hanaConfiguration.getPassword());
+
+                // String name = String.format("jdbc:sap://%s:%s/?databaseName=%s&user=%s&password=%s",hanaConfiguration.getHost().trim(),hanaConfiguration.getPort().toString(),hanaConfiguration.getDataBase().trim(),hanaConfiguration.getUsername(), hanaConfiguration.getPassword());
+
+                String name = String.format("jdbc:sap://%s:%s/?databaseName=%s",hanaConfiguration.getHost().trim(),hanaConfiguration.getPort().toString(),hanaConfiguration.getDataBase());
+                // dataMeta.setDatabaseType("GENERIC");
+                
+                Properties attributes = new Properties();
+                //把hana的调用地址设置到系统里
+                attributes.put("CUSTOM_URL", name);
+                attributes.put("CUSTOM_DRIVER_CLASS", "com.sap.db.jdbc.Driver");
+
+                dataMeta.setAttributes(attributes);
+                transMeta.addDatabase(dataMeta);
+                selectSQL = getSelectSQL(extractType, datasetTable, datasource, datasetTableFields, selectSQL);
+                inputStep = inputStep(transMeta, selectSQL);
+                udjcStep = udjc(datasetTableFields, DatasourceTypes.sap_hana);
+                break;
             case excel:
                 inputStep = excelInputStep(datasetTable.getInfo(), datasetTableFields);
                 udjcStep = udjc(datasetTableFields, DatasourceTypes.excel);
@@ -1115,7 +1136,7 @@ public class ExtractDataService {
         String tmp_code = code.replace("handleWraps", handleWraps).replace("handleBinaryType", handleBinaryTypeCode.toString());
 
         String Column_Fields;
-        if (datasourceType.equals(DatasourceTypes.oracle) || datasourceType.equals(DatasourceTypes.db2)) {
+        if (datasourceType.equals(DatasourceTypes.oracle) || datasourceType.equals(DatasourceTypes.db2) || datasourceType.equals(DatasourceTypes.sap_hana)) {
             Column_Fields = datasetTableFields.stream().map(DatasetTableField::getOriginName).collect(Collectors.joining(","));
         } else {
             Column_Fields = datasetTableFields.stream().map(DatasetTableField::getDataeaseName).collect(Collectors.joining(","));

@@ -62,6 +62,8 @@ public class ProviderFactory implements ApplicationContextAware {
                 return context.getBean("db2Query", QueryProvider.class);
             case api:
                 return context.getBean("apiQuery", ApiProvider.class);
+            case sap_hana:
+                return context.getBean("saphanaQuery",QueryProvider.class);
             default:
                 return context.getBean("mysqlQuery", QueryProvider.class);
         }

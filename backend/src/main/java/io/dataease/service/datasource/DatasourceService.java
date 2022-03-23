@@ -110,6 +110,9 @@ public class DatasourceService {
                     case ck:
                         datasourceDTO.setConfiguration(JSONObject.toJSONString(new Gson().fromJson(datasourceDTO.getConfiguration(), CHConfiguration.class)) );
                         break;
+                    case sap_hana:
+                        datasourceDTO.setConfiguration(JSONObject.toJSONString(new Gson().fromJson(datasourceDTO.getConfiguration(), SapHanaConfiguration.class)) );
+                        break;
                     case api:
                         JSONArray apiDefinitionList = JSONObject.parseArray(datasourceDTO.getConfiguration());
                         JSONArray apiDefinitionListWithStatus = new JSONArray();

@@ -3,6 +3,7 @@ package io.dataease.provider.datasource;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 public class ExtendedJdbcClassLoader extends URLClassLoader {
@@ -13,6 +14,19 @@ public class ExtendedJdbcClassLoader extends URLClassLoader {
 
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        if (name.contains("com.sap.db.jdbc.Driver")) {
+			
+			synchronized (getClassLoadingLock(name)) {
+				try {
+					URL u = new URL("jar:file:/opt/dataease/drivers/ngdbc-2.12.5.jar!/");
+					URLClassLoader ucl = new URLClassLoader(new URL[] { u });
+					Class<?> c1 = Class.forName(name, true, ucl);
+					return c1;
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
         synchronized (getClassLoadingLock(name)) {
             // First, check if the class has already been loaded
             Class<?> c = findLoadedClass(name);
@@ -63,6 +77,8 @@ public class ExtendedJdbcClassLoader extends URLClassLoader {
             throw new ClassNotFoundException(name);
         }
     }
+    return null;
+}
 
 
     @Override

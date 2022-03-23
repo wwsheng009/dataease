@@ -26,6 +26,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLClassLoader;
 @Service("jdbc")
 public class JdbcProvider extends DatasourceProvider {
     private static Map<String, DruidDataSource> jdbcConnection = new HashMap<>();
@@ -237,6 +240,9 @@ public class JdbcProvider extends DatasourceProvider {
             case pg:
                 PgConfiguration pgConfiguration = new Gson().fromJson(datasourceRequest.getDatasource().getConfiguration(), PgConfiguration.class);
                 return pgConfiguration.getDataBase();
+             case sap_hana:
+                SapHanaConfiguration hanaConfiguration = new Gson().fromJson(datasourceRequest.getDatasource().getConfiguration(), SapHanaConfiguration.class);
+                return hanaConfiguration.getDataBase();
             default:
                 JdbcConfiguration jdbcConfiguration = new Gson().fromJson(datasourceRequest.getDatasource().getConfiguration(), JdbcConfiguration.class);
                 return jdbcConfiguration.getDataBase();
@@ -490,6 +496,13 @@ public class JdbcProvider extends DatasourceProvider {
                 driver = db2Configuration.getDriver();
                 jdbcurl = db2Configuration.getJdbc();
                 break;
+            case sap_hana:
+                SapHanaConfiguration hanaConfiguration = new Gson().fromJson(datasourceRequest.getDatasource().getConfiguration(), SapHanaConfiguration.class);
+                username = hanaConfiguration.getUsername();
+                password = hanaConfiguration.getPassword();
+                driver = hanaConfiguration.getDriver();
+                jdbcurl = hanaConfiguration.getJdbc();
+                break;
             default:
                 break;
         }
@@ -589,6 +602,12 @@ public class JdbcProvider extends DatasourceProvider {
                 dataSource.setDriverClassName(db2Configuration.getDriver());
                 dataSource.setUrl(db2Configuration.getJdbc());
                 jdbcConfiguration = db2Configuration;
+            case sap_hana:
+                SapHanaConfiguration hanaConfiguration = new Gson().fromJson(datasourceRequest.getDatasource().getConfiguration(), SapHanaConfiguration.class);
+                dataSource.setPassword(hanaConfiguration.getPassword());
+                dataSource.setDriverClassName(hanaConfiguration.getDriver());
+                dataSource.setUrl(hanaConfiguration.getJdbc());
+                jdbcConfiguration = hanaConfiguration;
             default:
                 break;
         }
@@ -646,6 +665,12 @@ public class JdbcProvider extends DatasourceProvider {
                     throw new Exception(Translator.get("i18n_schema_is_empty"));
                 }
                 return "select TABNAME from syscat.tables  WHERE TABSCHEMA ='DE_SCHEMA' AND \"TYPE\" = 'T';".replace("DE_SCHEMA", db2Configuration.getSchema());
+            case sap_hana:
+                SapHanaConfiguration hanaConfiguration = new Gson().fromJson(datasourceRequest.getDatasource().getConfiguration(), SapHanaConfiguration.class);
+                if (StringUtils.isEmpty(hanaConfiguration.getSchema())) {
+                    throw new Exception(Translator.get("i18n_schema_is_empty"));
+                }
+                return "SELECT TABLE_NAME FROM TABLES WHERE SCHEMA_NAME = 'SCHEMANAME'  AND TABLE_NAME LIKE 'MAR%' LIMIT 100;".replace("SCHEMANAME", hanaConfiguration.getSchema());
             default:
                 return "show tables;";
         }
@@ -693,7 +718,12 @@ public class JdbcProvider extends DatasourceProvider {
                     throw new Exception(Translator.get("i18n_schema_is_empty"));
                 }
                 return "select TABNAME from syscat.tables  WHERE TABSCHEMA ='DE_SCHEMA' AND \"TYPE\" = 'V';".replace("DE_SCHEMA", db2Configuration.getSchema());
-
+            case sap_hana:
+                SapHanaConfiguration hanaConfiguration = new Gson().fromJson(datasourceRequest.getDatasource().getConfiguration(), SapHanaConfiguration.class);
+                if (StringUtils.isEmpty(hanaConfiguration.getSchema())) {
+                    throw new Exception(Translator.get("i18n_schema_is_empty"));
+                }
+                return "SELECT VIEW_NAME FROM VIEWS WHERE SCHEMA_NAME = 'SCHEMANAME' AND VIEW_NAME LIKE 'MAR%' LIMIT 100 ;".replace("SCHEMANAME", hanaConfiguration.getSchema());
             default:
                 return null;
         }
@@ -713,6 +743,8 @@ public class JdbcProvider extends DatasourceProvider {
                 return "SELECT nspname FROM pg_namespace;";
             case redshift:
                 return "SELECT nspname FROM pg_namespace;";
+            case sap_hana:
+                return "SELECT schema_name FROM SCHEMAS;";
             default:
                 return "show tables;";
         }

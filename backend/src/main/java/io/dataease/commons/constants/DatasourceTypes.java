@@ -15,6 +15,7 @@ public enum DatasourceTypes {
     db2("db2", "db2", "com.ibm.db2.jcc.DB2Driver", "\"", "\"", "\"", "\""),
     es("es", "es", "", "\"", "\"", "\"", "\""),
     redshift("redshift", "redshift", "org.postgresql.Driver", "\"", "\"", "\"", "\""),
+    sap_hana("sap_hana", "sap_hana", "com.sap.db.jdbc.Driver", "\"", "\"", "\"", "\""),
     api("api", "api", "", "\"", "\"", "\"", "\"");
 
 

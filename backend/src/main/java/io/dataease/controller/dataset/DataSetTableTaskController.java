@@ -36,7 +36,7 @@ public class DataSetTableTaskController {
     @Resource
     private DataSetTableTaskLogService dataSetTableTaskLogService;
 
-    @DePermission(type = DePermissionType.DATASET, value = "datasetTableTask.tableId", level = ResourceAuthLevel.DATASET_LEVEL_MANAGE)
+    // @DePermission(type = DePermissionType.DATASET, value = "datasetTableTask.tableId", level = ResourceAuthLevel.DATASET_LEVEL_MANAGE)
     @ApiOperation("保存")
     @PostMapping("save")
     public DatasetTableTask save(@RequestBody DataSetTaskRequest dataSetTaskRequest) throws Exception {
