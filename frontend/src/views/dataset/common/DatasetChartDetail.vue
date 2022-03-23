@@ -82,6 +82,7 @@
             <p v-if="detail.datasource.type === 'ck'" class="info-content">ClickHouse</p>
             <p v-if="detail.datasource.type === 'redshift'" class="info-content">AWS Redshift</p>
             <p v-if="detail.datasource.type === 'mongo'" class="info-content">MongoDB</p>
+            <p v-if="detail.datasource.type === 'sap_hana'" class="info-content">SAP Hana</p>
           </el-col>
           <el-col class="info-item">
             <p class="info-title">{{ $t('dataset.create_time') }}</p>

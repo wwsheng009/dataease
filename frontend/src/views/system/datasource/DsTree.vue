@@ -222,6 +222,8 @@ export default {
         return 'Apache Hive'
       } else if (type === 'db2') {
         return 'Db2'
+      } else if (type === 'sap_hana') {
+        return 'SAP Hana'
       } else if (type === 'api') {
         return 'API'
       }

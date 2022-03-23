@@ -240,12 +240,12 @@
         </el-form-item>
 
         <el-form-item
-          v-if="form.type=='oracle' || form.type=='sqlServer' || form.type=='pg' || form.type=='redshift' || form.type=='db2'">
+          v-if="form.type=='oracle' || form.type=='sqlServer' || form.type=='pg' || form.type=='redshift' || form.type=='db2' || form.type=='sap_hana'">
           <el-button icon="el-icon-plus" size="mini" @click="getSchema()">{{ $t('datasource.get_schema') }}</el-button>
         </el-form-item>
 
         <el-form-item
-          v-if="form.type=='oracle' || form.type=='sqlServer' || form.type=='pg' || form.type=='redshift' || form.type=='db2'"
+          v-if="form.type=='oracle' || form.type=='sqlServer' || form.type=='pg' || form.type=='redshift' || form.type=='db2' || form.type=='sap_hana'"
           :label="$t('datasource.schema')">
           <el-select v-model="form.configuration.schema" filterable :placeholder="$t('datasource.please_choose_schema')"
                      class="select-width">
@@ -253,7 +253,7 @@
           </el-select>
         </el-form-item>
 
-        <el-collapse v-if="form.configuration.dataSourceType=='jdbc' && form.type !== 'api' && form.type !== 'mongo'">
+        <el-collapse v-if="form.configuration.dataSourceType=='jdbc' && form.type !== 'api' && form.type !== 'mongo' && form.type !== 'sap_hana'">
           <el-collapse-item :title="$t('datasource.priority')" name="1">
             <el-form-item :label="$t('datasource.initial_pool_size')" prop="configuration.initialPoolSize">
               <el-input v-model="form.configuration.initialPoolSize" autocomplete="off" type="number" min="0"
@@ -396,6 +396,7 @@ export default {
         },
         {name: 'hive', label: 'Apache Hive', type: 'jdbc', extraParams: ''},
         {name: 'oracle', label: 'Oracle', type: 'jdbc'},
+        {name: 'sap_hana', label: 'SAP HANA', type: 'jdbc', extraParams: 'validateCertificate=false'},
         {name: 'sqlServer', label: 'SQL Server', type: 'jdbc', extraParams: ''},
         {name: 'pg', label: 'PostgreSQL', type: 'jdbc', extraParams: ''},
         {name: 'es', label: 'Elasticsearch', type: 'es'},
@@ -520,7 +521,7 @@ export default {
       this.$refs.dsForm.resetFields()
     },
     save() {
-      if (!this.form.configuration.schema && (this.form.type === 'oracle' || this.form.type === 'sqlServer' || this.form.type === 'pg' || this.form.type === 'redshift' || this.form.type === 'db2')) {
+      if (!this.form.configuration.schema && (this.form.type === 'oracle' || this.form.type === 'sqlServer' || this.form.type === 'pg' || this.form.type === 'redshift' || this.form.type === 'db2' || this.form.type === 'sap_hana')) {
         this.$message.error(i18n.t('datasource.please_choose_schema'))
         return
       }
@@ -558,6 +559,7 @@ export default {
               case 'sqlServer':
               case 'redshift':
               case 'oracle':
+              case 'sap_hana':
               case 'db2':
                 if (configuration.host == this.form.configuration.host && configuration.dataBase == this.form.configuration.dataBase && configuration.port == this.form.configuration.port && configuration.schema == this.form.configuration.schema) {
                   repeatDsName.push(child.name)
