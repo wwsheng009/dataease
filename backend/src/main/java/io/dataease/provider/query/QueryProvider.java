@@ -59,6 +59,11 @@ public abstract class QueryProvider {
         return 50;
     }
 
+    public String convertFieldType(String type) {
+        return type;
+    }
+
+
     public abstract String getSQLSummaryAsTmp(String sql, List<ChartViewFieldDTO> yAxis, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<ChartExtFilterRequest> extFilterRequestList, ChartViewWithBLOBs view);
 
     public abstract String wrapSql(String sql);

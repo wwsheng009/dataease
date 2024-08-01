@@ -199,7 +199,8 @@ public class JdbcProvider extends DatasourceProvider {
         }
         tableField.setRemarks(remarks);
         String dbType = resultSet.getString("TYPE_NAME").toUpperCase();
-        tableField.setFieldType(dbType);
+        QueryProvider qp2 = ProviderFactory.getQueryProvider(datasourceRequest.getDatasource().getType());
+        tableField.setFieldType(qp2.convertFieldType(dbType));
         if (dbType.equalsIgnoreCase("LONG")) {
             tableField.setFieldSize(65533);
         }

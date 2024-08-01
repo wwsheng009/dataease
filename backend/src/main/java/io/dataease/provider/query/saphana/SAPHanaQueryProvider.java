@@ -63,6 +63,7 @@ public class SAPHanaQueryProvider extends QueryProvider {
             case "ENUM":
             case "LONG":
             case "NVARCHAR2":
+            case "NVARCHAR":
             case "NCHAR":
                 return 0;// 文本
             case "DATE":
@@ -92,7 +93,17 @@ public class SAPHanaQueryProvider extends QueryProvider {
                 return 0;
         }
     }
-
+    @Override
+    public String convertFieldType(String type){
+        switch (type) {
+            case "NVARCHAR2":
+            case "NVARCHAR":
+                return "VARCHAR";
+            default:
+                break;
+        }
+        return type;
+    }
     @Override
     public String createSQLPreview(String sql, String orderBy) {
         return "SELECT * FROM (" + sqlFix(sql) + ") AS tmp " + " LIMIT 1000";
