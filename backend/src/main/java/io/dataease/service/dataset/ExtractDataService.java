@@ -908,7 +908,7 @@ public class ExtractDataService {
 
                 // String name = String.format("jdbc:sap://%s:%s/?databaseName=%s&user=%s&password=%s",hanaConfiguration.getHost().trim(),hanaConfiguration.getPort().toString(),hanaConfiguration.getDataBase().trim(),hanaConfiguration.getUsername(), hanaConfiguration.getPassword());
 
-                String name = String.format("jdbc:sap://%s:%s/?databaseName=%s",hanaConfiguration.getHost().trim(),hanaConfiguration.getPort().toString(),hanaConfiguration.getDataBase());
+                String name = String.format("jdbc:sap://%s:%s/?databaseName=%s&%s",hanaConfiguration.getHost().trim(),hanaConfiguration.getPort().toString(),hanaConfiguration.getDataBase(),hanaConfiguration.getExtraParams().toString());
                 // dataMeta.setDatabaseType("GENERIC");
                 
                 Properties attributes = new Properties();
@@ -1053,7 +1053,7 @@ public class ExtractDataService {
         textFileOutputMeta.setSeparator(separator);
         textFileOutputMeta.setExtension(extention);
 
-        if (datasource.getType().equalsIgnoreCase(DatasourceTypes.oracle.name()) ) {
+        if (datasource.getType().equalsIgnoreCase(DatasourceTypes.oracle.name()) || datasource.getType().equalsIgnoreCase(DatasourceTypes.sap_hana.name()) ) {
             TextFileField[] outputFields = new TextFileField[datasetTableFields.size() + 1];
             for(int i=0;i< datasetTableFields.size();i++){
                 TextFileField textFileField = new TextFileField();
